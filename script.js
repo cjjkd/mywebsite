@@ -6,8 +6,8 @@
 // ---------- 1. Supabase 配置 ----------
 // ⚠️ 请在 Supabase 后台 → Settings → API 中复制你的项目 URL 和 anon key
 // ⚠️ 替换下面两个占位符，然后保存文件即可
-const SUPABASE_URL = "YOUR_SUPABASE_URL";       // 例如：https://xxxxx.supabase.co
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY"; // 例如：eyJhbGciOiJIUzI1NiIs...
+const SUPABASE_URL = "https://yuddzsootgwekddcnqrk.supabase.co";       // 例如：https://xxxxx.supabase.co
+const SUPABASE_ANON_KEY = "sb_publishable_YavXwHOKoXnduk7af4cgVQ_M9xVOb28"; // 例如：eyJhbGciOiJIUzI1NiIs...
 
 let supabase = null;
 
