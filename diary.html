@@ -102,7 +102,7 @@
   </footer>
 
   <!-- Supabase CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- 共享 JS -->
   <script src="script.js"></script>
 
@@ -172,7 +172,7 @@
       btn.disabled = true;
 
       try {
-        const { error } = await supabase
+        const { error } = await supabaseClient
           .from('diary_entries')
           .insert([{ date, title, content, mood }]);
 
@@ -213,7 +213,7 @@
       listEl.innerHTML = '<p style="text-align:center;color:var(--text-light);">⏳ 加载中...</p>';
 
       try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
           .from('diary_entries')
           .select('*')
           .order('date', { ascending: false })
@@ -265,7 +265,7 @@
       if (!confirm('确定要删除这篇日记吗？此操作不可恢复！')) return;
 
       try {
-        const { error } = await supabase
+        const { error } = await supabaseClient
           .from('diary_entries')
           .delete()
           .eq('id', id);

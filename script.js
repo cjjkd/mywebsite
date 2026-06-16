@@ -5,38 +5,55 @@
 
 // ---------- 1. Supabase 配置 ----------
 // ⚠️ 请在 Supabase 后台 → Settings → API 中复制你的项目 URL 和 anon key
-// ⚠️ 替换下面两个占位符，然后保存文件即可
-const SUPABASE_URL = "https://yuddzsootgwekddcnqrk.supabase.co";       // 例如：https://xxxxx.supabase.co
-const SUPABASE_ANON_KEY = "sb_publishable_YavXwHOKoXnduk7af4cgVQ_M9xVOb28"; // 例如：eyJhbGciOiJIUzI1NiIs...
+// ⚠️ URL 格式：https://xxxxx.supabase.co（不要带 /rest/v1/ 等路径！）
+// ⚠️ Key 格式：sb_publishable_... 或 eyJhbGciOiJIUzI1NiIs...
+const SUPABASE_URL = "https://yuddzsootgwekddcnqrk.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_YavXwHOKoXnduk7af4cgVQ_M9xVOb28";
 
-let supabase = null;
+// 注意：下面这个 supabaseClient 是我们的客户端实例（初始化后才赋值）
+// 不要和 CDN 加载的 window.supabase（模块对象）混淆
+let supabaseClient = null;
 
 /**
  * 初始化 Supabase 客户端
  * 如果 URL/key 还是占位符，初始化会跳过（页面仍可浏览，但数据库功能不可用）
  */
 function initSupabase() {
+  console.log("🔍 开始初始化 Supabase...");
+  console.log("  URL:", SUPABASE_URL);
+  console.log("  Key 前缀:", SUPABASE_ANON_KEY.substring(0, 20) + "...");
+
   // 检查 Supabase JS 库是否已通过 CDN 加载
-  if (typeof window.supabase === "undefined" || !window.supabase.createClient) {
-    console.warn("Supabase JS 库未加载。请检查 CDN 引入。");
+  if (typeof window.supabase === "undefined") {
+    console.warn("❌ window.supabase 不存在！CDN 脚本可能未加载。");
     return;
   }
+  if (!window.supabase.createClient) {
+    console.warn("❌ window.supabase.createClient 不是一个函数！");
+    return;
+  }
+  console.log("✅ Supabase CDN 库已加载");
 
   // 检查是否已填入真实的 URL 和 Key
   if (
     SUPABASE_URL === "YOUR_SUPABASE_URL" ||
     SUPABASE_ANON_KEY === "YOUR_SUPABASE_ANON_KEY"
   ) {
-    console.warn(
-      "⚠️ 请先在 script.js 中填入你的 Supabase URL 和 Anon Key！" +
-      "（在 Supabase 后台 → Settings → API 中可以找到）"
-    );
+    console.warn("⚠️ 请先在 script.js 中填入你的 Supabase URL 和 Anon Key！");
     return;
   }
+  console.log("✅ URL 和 Key 已配置");
 
-  // 创建 Supabase 客户端
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  console.log("✅ Supabase 客户端已初始化");
+  // 创建 Supabase 客户端实例
+  try {
+    // window.supabase = CDN 加载的 Supabase 模块（包含 createClient 方法）
+    // supabaseClient = 我们创建的项目客户端实例（用于调用 .from() 等方法）
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log("✅ Supabase 客户端已初始化");
+    console.log("  客户端对象:", supabaseClient);
+  } catch (err) {
+    console.error("❌ 创建 Supabase 客户端失败：", err);
+  }
 }
 
 // 页面加载时自动初始化
@@ -151,7 +168,7 @@ function formatDate(dateStr) {
  * 检查 Supabase 是否已就绪，如果未就绪则显示提示并返回 false
  */
 function requireSupabase() {
-  if (!supabase) {
+  if (!supabaseClient) {
     showError("数据库未连接。请先在 script.js 中填入你的 Supabase URL 和 Anon Key！");
     return false;
   }
