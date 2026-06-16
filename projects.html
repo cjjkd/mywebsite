@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>项目展示 - 个人网站</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ========== 导航栏 ========== -->
+  <nav class="navbar">
+    <a href="index.html" class="logo">我的<span>网站</span></a>
+    <button class="hamburger" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">首页</a></li>
+      <li><a href="about.html">关于我</a></li>
+      <li><a href="projects.html">项目</a></li>
+      <li><a href="diary.html">日记</a></li>
+      <li><a href="checkin.html">打卡</a></li>
+      <li><a href="contact.html">联系</a></li>
+    </ul>
+  </nav>
+
+  <!-- ========== 页面标题 ========== -->
+  <section class="page-header">
+    <h1>我的项目</h1>
+    <p>这里展示了我参与和开发的一些项目作品</p>
+  </section>
+
+  <!-- ========== 项目网格 ========== -->
+  <section class="section">
+    <div class="container">
+      <div class="projects-grid">
+
+        <!-- 项目 1 -->
+        <div class="card project-card">
+          <div class="project-img">🏪 项目占位图</div>
+          <div class="project-info">
+            <h3>在线商城系统</h3>
+            <p>基于 React + Node.js 的全栈电商平台，集成支付、物流跟踪和后台管理系统。</p>
+            <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 12px;">
+              🛠️ React · Node.js · PostgreSQL
+            </p>
+            <a href="#" class="btn btn-primary btn-sm">查看项目</a>
+          </div>
+        </div>
+
+        <!-- 项目 2 -->
+        <div class="card project-card">
+          <div class="project-img">📊 项目占位图</div>
+          <div class="project-info">
+            <h3>数据可视化仪表盘</h3>
+            <p>实时业务数据监控面板，支持自定义图表布局和导出功能。</p>
+            <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 12px;">
+              🛠️ Vue.js · ECharts · Express
+            </p>
+            <a href="#" class="btn btn-primary btn-sm">查看项目</a>
+          </div>
+        </div>
+
+        <!-- 项目 3 -->
+        <div class="card project-card">
+          <div class="project-img">📝 项目占位图</div>
+          <div class="project-info">
+            <h3>个人博客系统</h3>
+            <p>支持 Markdown 写作的静态博客，自动生成 RSS 和站点地图。</p>
+            <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 12px;">
+              🛠️ Next.js · MDX · Tailwind CSS
+            </p>
+            <a href="#" class="btn btn-primary btn-sm">查看项目</a>
+          </div>
+        </div>
+
+        <!-- 项目 4 -->
+        <div class="card project-card">
+          <div class="project-img">✅ 项目占位图</div>
+          <div class="project-info">
+            <h3>任务管理应用</h3>
+            <p>团队协作看板工具，支持任务分配、进度追踪和甘特图视图。</p>
+            <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 12px;">
+              🛠️ React · Firebase · Ant Design
+            </p>
+            <a href="#" class="btn btn-primary btn-sm">查看项目</a>
+          </div>
+        </div>
+
+        <!-- 项目 5 -->
+        <div class="card project-card">
+          <div class="project-img">🌤️ 项目占位图</div>
+          <div class="project-info">
+            <h3>天气预报应用</h3>
+            <p>调用开放 API 的天气查询应用，支持城市搜索和 7 天预报。</p>
+            <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 12px;">
+              🛠️ Vanilla JS · OpenWeather API
+            </p>
+            <a href="#" class="btn btn-primary btn-sm">查看项目</a>
+          </div>
+        </div>
+
+        <!-- 项目 6 -->
+        <div class="card project-card">
+          <div class="project-img">🎮 项目占位图</div>
+          <div class="project-info">
+            <h3>贪吃蛇游戏</h3>
+            <p>使用 Canvas API 开发的经典贪吃蛇游戏，支持键盘操作和分数排行榜。</p>
+            <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 12px;">
+              🛠️ HTML5 Canvas · JavaScript
+            </p>
+            <a href="#" class="btn btn-primary btn-sm">查看项目</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 页脚 ========== -->
+  <footer class="footer">
+    <ul class="footer-links">
+      <li><a href="index.html">首页</a></li>
+      <li><a href="about.html">关于我</a></li>
+      <li><a href="projects.html">项目</a></li>
+      <li><a href="diary.html">日记</a></li>
+      <li><a href="checkin.html">打卡</a></li>
+      <li><a href="contact.html">联系</a></li>
+    </ul>
+    <p>&copy; 2026 我的个人网站 | 使用 ❤️ 和 HTML/CSS/JS 构建</p>
+  </footer>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <!-- 共享 JS -->
+  <script src="script.js"></script>
+</body>
+</html>

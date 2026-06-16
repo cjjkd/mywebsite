@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>打卡 - 个人网站</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ========== 导航栏 ========== -->
+  <nav class="navbar">
+    <a href="index.html" class="logo">我的<span>网站</span></a>
+    <button class="hamburger" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">首页</a></li>
+      <li><a href="about.html">关于我</a></li>
+      <li><a href="projects.html">项目</a></li>
+      <li><a href="diary.html">日记</a></li>
+      <li><a href="checkin.html">打卡</a></li>
+      <li><a href="contact.html">联系</a></li>
+    </ul>
+  </nav>
+
+  <!-- ========== 页面标题 ========== -->
+  <section class="page-header">
+    <h1>✅ 每日打卡</h1>
+    <p>记录每天的学习与成长，坚持就是胜利</p>
+  </section>
+
+  <!-- ========== 打卡表单 ========== -->
+  <section class="section">
+    <div class="container">
+
+      <div class="diary-form">
+        <h2 style="margin-bottom: 20px; color: var(--primary);">📋 今日打卡</h2>
+
+        <!-- 日期显示 -->
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label>📅 日期</label>
+          <input type="text" id="checkinDate" readonly
+            style="background:#E8ECF0;cursor:not-allowed;font-weight:600;">
+        </div>
+
+        <!-- 打卡类型切换按钮 -->
+        <label style="font-weight: 600; font-size: 0.9rem; color: var(--primary); display: block; margin-bottom: 8px;">
+          🏷️ 打卡类型
+        </label>
+        <div class="checkin-type-toggle" id="typeToggle">
+          <button class="type-btn active" data-type="学习">📚 学习</button>
+          <button class="type-btn" data-type="健身">💪 健身</button>
+          <button class="type-btn" data-type="冥想">🧘 冥想</button>
+        </div>
+
+        <input type="hidden" id="checkinType" value="学习">
+
+        <!-- 时长 -->
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label for="checkinDuration">⏱️ 时长（分钟）</label>
+          <input type="number" id="checkinDuration" placeholder="例如：30" min="1" max="1440">
+        </div>
+
+        <!-- 备注 -->
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label for="checkinNotes">📝 备注（可选）</label>
+          <textarea id="checkinNotes" placeholder="今天学了什么？做了什么运动？有什么收获？..." rows="4"></textarea>
+        </div>
+
+        <!-- 打卡按钮 -->
+        <button class="btn btn-primary" id="saveCheckinBtn" style="width: 100%;">
+          ✅ 打卡
+        </button>
+      </div>
+
+      <!-- ========== 历史打卡列表 ========== -->
+      <h2 class="section-title" style="margin-top: 20px;">📋 打卡历史</h2>
+      <div class="checkin-list" id="checkinList">
+        <!-- 动态加载 -->
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <p>还没有打卡记录，开始你的第一次打卡吧！</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== 页脚 ========== -->
+  <footer class="footer">
+    <ul class="footer-links">
+      <li><a href="index.html">首页</a></li>
+      <li><a href="about.html">关于我</a></li>
+      <li><a href="projects.html">项目</a></li>
+      <li><a href="diary.html">日记</a></li>
+      <li><a href="checkin.html">打卡</a></li>
+      <li><a href="contact.html">联系</a></li>
+    </ul>
+    <p>&copy; 2026 我的个人网站 | 使用 ❤️ 和 HTML/CSS/JS 构建</p>
+  </footer>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <!-- 共享 JS -->
+  <script src="script.js"></script>
+
+  <!-- ========== 打卡页专属逻辑 ========== -->
+  <script>
+    // ---------- 初始化 ----------
+    document.addEventListener('DOMContentLoaded', () => {
+      // 设置日期为今天
+      document.getElementById('checkinDate').value = getToday() + '（今天）';
+
+      // 加载历史打卡
+      loadCheckins();
+
+      // 保存按钮事件
+      document.getElementById('saveCheckinBtn').addEventListener('click', saveCheckin);
+
+      // 类型切换按钮事件
+      setupTypeToggle();
+    });
+
+    // ---------- 类型切换 ----------
+    function setupTypeToggle() {
+      const typeBtns = document.querySelectorAll('#typeToggle .type-btn');
+      const typeHidden = document.getElementById('checkinType');
+
+      typeBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          // 移除所有 active
+          typeBtns.forEach((b) => b.classList.remove('active'));
+          // 设置当前 active
+          btn.classList.add('active');
+          // 保存选中值
+          typeHidden.value = btn.getAttribute('data-type');
+        });
+      });
+    }
+
+    // ---------- 保存打卡 ----------
+    async function saveCheckin() {
+      if (!requireSupabase()) return;
+
+      const date = getToday(); // 始终使用今天
+      const type = document.getElementById('checkinType').value;
+      const durationStr = document.getElementById('checkinDuration').value.trim();
+      const notes = document.getElementById('checkinNotes').value.trim();
+
+      // 表单验证
+      if (!durationStr) {
+        showError('请输入打卡时长！');
+        return;
+      }
+
+      const duration = parseInt(durationStr);
+      if (isNaN(duration) || duration < 1) {
+        showError('请输入有效的时长（至少 1 分钟）！');
+        return;
+      }
+
+      const btn = document.getElementById('saveCheckinBtn');
+      btn.textContent = '⏳ 打卡中...';
+      btn.disabled = true;
+
+      try {
+        const { error } = await supabase
+          .from('checkins')
+          .insert([{ date, type, duration, notes }]);
+
+        if (error) throw error;
+
+        showSuccess('打卡成功！继续加油！🎉');
+
+        // 清空输入
+        document.getElementById('checkinDuration').value = '';
+        document.getElementById('checkinNotes').value = '';
+
+        // 重新加载列表
+        loadCheckins();
+      } catch (err) {
+        console.error('打卡失败：', err);
+        showError('打卡失败：' + (err.message || '未知错误。请检查 Supabase 连接和表结构。'));
+      } finally {
+        btn.textContent = '✅ 打卡';
+        btn.disabled = false;
+      }
+    }
+
+    // ---------- 加载历史打卡 ----------
+    async function loadCheckins() {
+      const listEl = document.getElementById('checkinList');
+
+      if (!requireSupabase()) {
+        listEl.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">⚠️</div>
+            <p>请先在 script.js 中配置 Supabase URL 和 Key</p>
+          </div>`;
+        return;
+      }
+
+      listEl.innerHTML = '<p style="text-align:center;color:var(--text-light);">⏳ 加载中...</p>';
+
+      try {
+        const { data, error } = await supabase
+          .from('checkins')
+          .select('*')
+          .order('date', { ascending: false })
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          listEl.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">📭</div>
+              <p>还没有打卡记录，开始你的第一次打卡吧！</p>
+            </div>`;
+          return;
+        }
+
+        // 渲染列表
+        listEl.innerHTML = data
+          .map(
+            (entry) => `
+          <div class="card checkin-card">
+            <div class="checkin-info">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <span style="font-size:0.85rem;color:var(--text-light);">📅 ${formatDate(entry.date)}</span>
+                <span class="badge ${getBadgeClass(entry.type)}">${getTypeLabel(entry.type)}</span>
+              </div>
+              ${entry.notes ? `<p style="margin-top:6px;color:var(--text-light);font-size:0.9rem;">${escapeHtml(entry.notes)}</p>` : ''}
+            </div>
+            <div style="display:flex;align-items:center;gap:16px;">
+              <span class="checkin-duration">⏱️ ${entry.duration} 分钟</span>
+              <button class="btn btn-danger btn-sm" onclick="deleteCheckin('${entry.id}')">
+                🗑️ 删除
+              </button>
+            </div>
+          </div>`
+          )
+          .join('');
+      } catch (err) {
+        console.error('加载打卡记录失败：', err);
+        listEl.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">❌</div>
+            <p>加载失败：${escapeHtml(err.message || '未知错误')}</p>
+          </div>`;
+      }
+    }
+
+    // ---------- 删除打卡 ----------
+    async function deleteCheckin(id) {
+      if (!requireSupabase()) return;
+
+      if (!confirm('确定要删除这条打卡记录吗？')) return;
+
+      try {
+        const { error } = await supabase
+          .from('checkins')
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+
+        showSuccess('打卡记录已删除');
+        loadCheckins();
+      } catch (err) {
+        console.error('删除打卡记录失败：', err);
+        showError('删除失败：' + (err.message || '未知错误'));
+      }
+    }
+
+    // ---------- 获取类型对应的徽章样式类 ----------
+    function getBadgeClass(type) {
+      const map = {
+        '学习': 'badge-study',
+        '健身': 'badge-fitness',
+        '冥想': 'badge-meditation',
+      };
+      return map[type] || 'badge-study';
+    }
+
+    // ---------- 获取类型显示文本（带 emoji） ----------
+    function getTypeLabel(type) {
+      const map = {
+        '学习': '📚 学习',
+        '健身': '💪 健身',
+        '冥想': '🧘 冥想',
+      };
+      return map[type] || type;
+    }
+
+    // ---------- 防 XSS：转义 HTML ----------
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>

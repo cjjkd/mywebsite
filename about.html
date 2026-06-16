@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>关于我 - 个人网站</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ========== 导航栏 ========== -->
+  <nav class="navbar">
+    <a href="index.html" class="logo">我的<span>网站</span></a>
+    <button class="hamburger" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">首页</a></li>
+      <li><a href="about.html">关于我</a></li>
+      <li><a href="projects.html">项目</a></li>
+      <li><a href="diary.html">日记</a></li>
+      <li><a href="checkin.html">打卡</a></li>
+      <li><a href="contact.html">联系</a></li>
+    </ul>
+  </nav>
+
+  <!-- ========== 页面标题 ========== -->
+  <section class="page-header">
+    <h1>关于我</h1>
+    <p>了解更多关于我的故事和技能</p>
+  </section>
+
+  <!-- ========== 详细个人介绍 + 技能 ========== -->
+  <section class="section">
+    <div class="container">
+      <div class="about-content">
+
+        <!-- 左侧：个人介绍 -->
+        <div class="about-bio card">
+          <h2 style="margin-bottom: 16px; color: var(--primary);">👋 你好！</h2>
+          <p>
+            我是张三，一名热爱技术的全栈开发者。从大学时期写下第一行代码开始，
+            我就被编程的世界深深吸引。对我来说，编程不仅是工作，更是一种创造的乐趣。
+          </p>
+          <p>
+            我有 3 年的 Web 开发经验，擅长使用现代前端框架和后端技术构建高性能的应用程序。
+            在工作中，我注重代码质量和用户体验；在工作之外，我热爱开源社区，
+            喜欢写博客分享技术心得。
+          </p>
+          <p>
+            当我不在写代码的时候，我喜欢健身、阅读和旅行。我相信平衡的生活方式
+            能让我保持创造力，也让我成为一个更好的开发者。
+          </p>
+          <p>
+            这个网站是我个人成长记录的载体——在这里你可以看到我的项目作品、
+            每日学习打卡和生活中的点滴思考。
+          </p>
+        </div>
+
+        <!-- 右侧：技能列表 -->
+        <div class="skills card">
+          <h2 style="margin-bottom: 24px; color: var(--primary);">🛠️ 技能</h2>
+
+          <div class="skill-item">
+            <div class="skill-label"><span>HTML / CSS</span><span>90%</span></div>
+            <div class="skill-bar">
+              <div class="skill-fill" style="width: 0%;" data-width="90%"></div>
+            </div>
+          </div>
+
+          <div class="skill-item">
+            <div class="skill-label"><span>JavaScript</span><span>85%</span></div>
+            <div class="skill-bar">
+              <div class="skill-fill" style="width: 0%;" data-width="85%"></div>
+            </div>
+          </div>
+
+          <div class="skill-item">
+            <div class="skill-label"><span>React</span><span>80%</span></div>
+            <div class="skill-bar">
+              <div class="skill-fill" style="width: 0%;" data-width="80%"></div>
+            </div>
+          </div>
+
+          <div class="skill-item">
+            <div class="skill-label"><span>Node.js</span><span>75%</span></div>
+            <div class="skill-bar">
+              <div class="skill-fill" style="width: 0%;" data-width="75%"></div>
+            </div>
+          </div>
+
+          <div class="skill-item">
+            <div class="skill-label"><span>Python</span><span>70%</span></div>
+            <div class="skill-bar">
+              <div class="skill-fill" style="width: 0%;" data-width="70%"></div>
+            </div>
+          </div>
+
+          <div class="skill-item">
+            <div class="skill-label"><span>数据库 (SQL)</span><span>80%</span></div>
+            <div class="skill-bar">
+              <div class="skill-fill" style="width: 0%;" data-width="80%"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 页脚 ========== -->
+  <footer class="footer">
+    <ul class="footer-links">
+      <li><a href="index.html">首页</a></li>
+      <li><a href="about.html">关于我</a></li>
+      <li><a href="projects.html">项目</a></li>
+      <li><a href="diary.html">日记</a></li>
+      <li><a href="checkin.html">打卡</a></li>
+      <li><a href="contact.html">联系</a></li>
+    </ul>
+    <p>&copy; 2026 我的个人网站 | 使用 ❤️ 和 HTML/CSS/JS 构建</p>
+  </footer>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <!-- 共享 JS -->
+  <script src="script.js"></script>
+
+  <!-- 进度条动画 -->
+  <script>
+    // 当进度条进入视口时，触发宽度动画
+    function animateSkillBars() {
+      const fills = document.querySelectorAll('.skill-fill');
+      fills.forEach((fill) => {
+        const targetWidth = fill.getAttribute('data-width');
+        const rect = fill.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        if (isVisible) {
+          fill.style.width = targetWidth;
+        }
+      });
+    }
+
+    // 页面加载后稍作延迟触发动画
+    window.addEventListener('load', () => {
+      setTimeout(animateSkillBars, 300);
+    });
+
+    // 滚动时也检查
+    window.addEventListener('scroll', animateSkillBars);
+  </script>
+</body>
+</html>

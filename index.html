@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的个人网站 - 首页</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ========== 导航栏 ========== -->
+  <nav class="navbar">
+    <a href="index.html" class="logo">我的<span>网站</span></a>
+    <button class="hamburger" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">首页</a></li>
+      <li><a href="about.html">关于我</a></li>
+      <li><a href="projects.html">项目</a></li>
+      <li><a href="diary.html">日记</a></li>
+      <li><a href="checkin.html">打卡</a></li>
+      <li><a href="contact.html">联系</a></li>
+    </ul>
+  </nav>
+
+  <!-- ========== Hero 区域 ========== -->
+  <section class="hero">
+    <h1>你好，我是<span>张三</span> 👋</h1>
+    <p class="subtitle">
+      一名热爱技术与生活的全栈开发者。喜欢用代码创造有价值的作品，
+      也享受记录每一天的成长与感动。
+    </p>
+    <div class="cta-buttons">
+      <a href="projects.html" class="btn btn-primary">查看我的作品</a>
+      <a href="contact.html" class="btn btn-outline">联系我</a>
+    </div>
+  </section>
+
+  <!-- ========== 个人简介摘要 ========== -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">关于我</h2>
+      <div class="intro-grid">
+        <!-- 卡片 1 -->
+        <div class="card intro-card">
+          <div class="icon">💻</div>
+          <h3>全栈开发</h3>
+          <p>精通前端与后端技术栈，热衷于构建用户体验优秀的 Web 应用。</p>
+        </div>
+        <!-- 卡片 2 -->
+        <div class="card intro-card">
+          <div class="icon">📚</div>
+          <h3>持续学习</h3>
+          <p>每天坚持学习新技术，保持对编程世界的热情与好奇心。</p>
+        </div>
+        <!-- 卡片 3 -->
+        <div class="card intro-card">
+          <div class="icon">🎯</div>
+          <h3>目标驱动</h3>
+          <p>以结果为导向，注重效率与质量，让每一行代码都有意义。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 精选项目展示 ========== -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">精选项目</h2>
+      <div class="projects-grid">
+        <!-- 项目 1 -->
+        <div class="card project-card">
+          <div class="project-img">🏪 项目占位图</div>
+          <div class="project-info">
+            <h3>在线商城系统</h3>
+            <p>一个功能完整的电商平台，支持商品浏览、购物车和订单管理。</p>
+            <a href="projects.html" class="btn btn-primary">了解更多</a>
+          </div>
+        </div>
+        <!-- 项目 2 -->
+        <div class="card project-card">
+          <div class="project-img">📊 项目占位图</div>
+          <div class="project-info">
+            <h3>数据可视化仪表盘</h3>
+            <p>使用图表库构建的实时数据分析面板，直观展示业务指标。</p>
+            <a href="projects.html" class="btn btn-primary">了解更多</a>
+          </div>
+        </div>
+        <!-- 项目 3 -->
+        <div class="card project-card">
+          <div class="project-img">📝 项目占位图</div>
+          <div class="project-info">
+            <h3>个人博客系统</h3>
+            <p>支持 Markdown 写作的个人博客，带有标签分类和搜索功能。</p>
+            <a href="projects.html" class="btn btn-primary">了解更多</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 页脚 ========== -->
+  <footer class="footer">
+    <ul class="footer-links">
+      <li><a href="index.html">首页</a></li>
+      <li><a href="about.html">关于我</a></li>
+      <li><a href="projects.html">项目</a></li>
+      <li><a href="diary.html">日记</a></li>
+      <li><a href="checkin.html">打卡</a></li>
+      <li><a href="contact.html">联系</a></li>
+    </ul>
+    <p>&copy; 2026 我的个人网站 | 使用 ❤️ 和 HTML/CSS/JS 构建</p>
+  </footer>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <!-- 共享 JS -->
+  <script src="script.js"></script>
+</body>
+</html>

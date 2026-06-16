@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>日记 - 个人网站</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ========== 导航栏 ========== -->
+  <nav class="navbar">
+    <a href="index.html" class="logo">我的<span>网站</span></a>
+    <button class="hamburger" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">首页</a></li>
+      <li><a href="about.html">关于我</a></li>
+      <li><a href="projects.html">项目</a></li>
+      <li><a href="diary.html">日记</a></li>
+      <li><a href="checkin.html">打卡</a></li>
+      <li><a href="contact.html">联系</a></li>
+    </ul>
+  </nav>
+
+  <!-- ========== 页面标题 ========== -->
+  <section class="page-header">
+    <h1>📝 我的日记</h1>
+    <p>记录每天的所思所想、成长与感悟</p>
+  </section>
+
+  <!-- ========== 写日记表单 ========== -->
+  <section class="section">
+    <div class="container">
+
+      <div class="diary-form">
+        <h2 style="margin-bottom: 20px; color: var(--primary);">✍️ 写日记</h2>
+
+        <!-- 第一行：日期 + 标题 -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="diaryDate">📅 日期</label>
+            <input type="date" id="diaryDate">
+          </div>
+          <div class="form-group">
+            <label for="diaryTitle">📌 标题</label>
+            <input type="text" id="diaryTitle" placeholder="给今天的日记起个标题吧..." maxlength="100">
+          </div>
+        </div>
+
+        <!-- 正文 -->
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="diaryContent">📖 正文</label>
+          <textarea id="diaryContent" placeholder="今天发生了什么有趣的事情？有什么新的想法？写下来吧..." rows="6"></textarea>
+        </div>
+
+        <!-- 心情选择器 -->
+        <label style="font-weight: 600; font-size: 0.9rem; color: var(--primary); display: block; margin-bottom: 8px;">
+          😊 今天的心情
+        </label>
+        <div class="mood-selector" id="moodSelector">
+          <button class="mood-btn" data-mood="开心">😊 开心</button>
+          <button class="mood-btn" data-mood="平静">😐 平静</button>
+          <button class="mood-btn" data-mood="难过">😢 难过</button>
+          <button class="mood-btn" data-mood="激动">🔥 激动</button>
+          <button class="mood-btn" data-mood="充实">💪 充实</button>
+        </div>
+
+        <input type="hidden" id="diaryMood" value="">
+
+        <!-- 保存按钮 -->
+        <button class="btn btn-primary" id="saveDiaryBtn" style="width: 100%;">
+          💾 保存日记
+        </button>
+      </div>
+
+      <!-- ========== 历史日记列表 ========== -->
+      <h2 class="section-title" style="margin-top: 20px;">📚 历史日记</h2>
+      <div class="diary-list" id="diaryList">
+        <!-- 动态加载 -->
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <p>还没有写过日记，快来写第一篇吧！</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== 页脚 ========== -->
+  <footer class="footer">
+    <ul class="footer-links">
+      <li><a href="index.html">首页</a></li>
+      <li><a href="about.html">关于我</a></li>
+      <li><a href="projects.html">项目</a></li>
+      <li><a href="diary.html">日记</a></li>
+      <li><a href="checkin.html">打卡</a></li>
+      <li><a href="contact.html">联系</a></li>
+    </ul>
+    <p>&copy; 2026 我的个人网站 | 使用 ❤️ 和 HTML/CSS/JS 构建</p>
+  </footer>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <!-- 共享 JS -->
+  <script src="script.js"></script>
+
+  <!-- ========== 日记页专属逻辑 ========== -->
+  <script>
+    // ---------- 初始化 ----------
+    document.addEventListener('DOMContentLoaded', () => {
+      // 设置日期为今天
+      document.getElementById('diaryDate').value = getToday();
+
+      // 加载历史日记
+      loadDiaries();
+
+      // 保存按钮事件
+      document.getElementById('saveDiaryBtn').addEventListener('click', saveDiary);
+
+      // 心情选择器事件
+      setupMoodSelector();
+    });
+
+    // ---------- 心情选择器 ----------
+    function setupMoodSelector() {
+      const moodBtns = document.querySelectorAll('.mood-btn');
+      const moodHidden = document.getElementById('diaryMood');
+
+      moodBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          // 移除所有选中状态
+          moodBtns.forEach((b) => b.classList.remove('selected'));
+          // 设置当前选中
+          btn.classList.add('selected');
+          // 保存选中值
+          moodHidden.value = btn.getAttribute('data-mood');
+        });
+      });
+    }
+
+    // ---------- 保存日记 ----------
+    async function saveDiary() {
+      if (!requireSupabase()) return;
+
+      const date = document.getElementById('diaryDate').value.trim();
+      const title = document.getElementById('diaryTitle').value.trim();
+      const content = document.getElementById('diaryContent').value.trim();
+      const mood = document.getElementById('diaryMood').value;
+
+      // 表单验证
+      if (!date) {
+        showError('请选择日期！');
+        return;
+      }
+      if (!title) {
+        showError('请输入日记标题！');
+        return;
+      }
+      if (!content) {
+        showError('请输入日记正文！');
+        return;
+      }
+      if (!mood) {
+        showError('请选择你今天的心情！');
+        return;
+      }
+
+      const btn = document.getElementById('saveDiaryBtn');
+      btn.textContent = '⏳ 保存中...';
+      btn.disabled = true;
+
+      try {
+        const { error } = await supabase
+          .from('diary_entries')
+          .insert([{ date, title, content, mood }]);
+
+        if (error) throw error;
+
+        showSuccess('日记保存成功！🎉');
+
+        // 清空表单
+        document.getElementById('diaryTitle').value = '';
+        document.getElementById('diaryContent').value = '';
+        document.getElementById('diaryMood').value = '';
+        document.querySelectorAll('.mood-btn').forEach((b) => b.classList.remove('selected'));
+
+        // 重新加载列表
+        loadDiaries();
+      } catch (err) {
+        console.error('保存日记失败：', err);
+        showError('保存失败：' + (err.message || '未知错误。请检查 Supabase 连接和表结构。'));
+      } finally {
+        btn.textContent = '💾 保存日记';
+        btn.disabled = false;
+      }
+    }
+
+    // ---------- 加载历史日记 ----------
+    async function loadDiaries() {
+      const listEl = document.getElementById('diaryList');
+
+      if (!requireSupabase()) {
+        listEl.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">⚠️</div>
+            <p>请先在 script.js 中配置 Supabase URL 和 Key</p>
+          </div>`;
+        return;
+      }
+
+      listEl.innerHTML = '<p style="text-align:center;color:var(--text-light);">⏳ 加载中...</p>';
+
+      try {
+        const { data, error } = await supabase
+          .from('diary_entries')
+          .select('*')
+          .order('date', { ascending: false })
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          listEl.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">📭</div>
+              <p>还没有写过日记，快来写第一篇吧！</p>
+            </div>`;
+          return;
+        }
+
+        // 渲染列表
+        listEl.innerHTML = data
+          .map(
+            (entry) => `
+          <div class="card diary-card">
+            <div class="diary-info">
+              <div class="diary-date">📅 ${formatDate(entry.date)}</div>
+              <div class="diary-title">${escapeHtml(entry.title)}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:16px;">
+              <span class="diary-mood" title="${escapeHtml(entry.mood)}">${getMoodEmoji(entry.mood)}</span>
+              <button class="btn btn-danger btn-sm" onclick="deleteDiary('${entry.id}')">
+                🗑️ 删除
+              </button>
+            </div>
+          </div>`
+          )
+          .join('');
+      } catch (err) {
+        console.error('加载日记失败：', err);
+        listEl.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">❌</div>
+            <p>加载失败：${escapeHtml(err.message || '未知错误')}</p>
+          </div>`;
+      }
+    }
+
+    // ---------- 删除日记 ----------
+    async function deleteDiary(id) {
+      if (!requireSupabase()) return;
+
+      if (!confirm('确定要删除这篇日记吗？此操作不可恢复！')) return;
+
+      try {
+        const { error } = await supabase
+          .from('diary_entries')
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+
+        showSuccess('日记已删除');
+        loadDiaries();
+      } catch (err) {
+        console.error('删除日记失败：', err);
+        showError('删除失败：' + (err.message || '未知错误'));
+      }
+    }
+
+    // ---------- 心情 → emoji 映射 ----------
+    function getMoodEmoji(mood) {
+      const map = {
+        '开心': '😊',
+        '平静': '😐',
+        '难过': '😢',
+        '激动': '🔥',
+        '充实': '💪',
+      };
+      return map[mood] || '❓';
+    }
+
+    // ---------- 防 XSS：转义 HTML ----------
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>
