@@ -16,14 +16,13 @@ let supabase = null;
  * 如果 URL/key 还是占位符，初始化会跳过（页面仍可浏览，但数据库功能不可用）
  */
 function initSupabase() {
-  // 确保 Supabase JS 库已通过 CDN 加载
-  if (typeof supabase !== "undefined" && window.supabase && window.supabase.createClient) {
-    // supabase-js v2 UMD 导出在 window.supabase 上
-  } else if (typeof window.supabase === "undefined" || !window.supabase.createClient) {
+  // 检查 Supabase JS 库是否已通过 CDN 加载
+  if (typeof window.supabase === "undefined" || !window.supabase.createClient) {
     console.warn("Supabase JS 库未加载。请检查 CDN 引入。");
     return;
   }
 
+  // 检查是否已填入真实的 URL 和 Key
   if (
     SUPABASE_URL === "YOUR_SUPABASE_URL" ||
     SUPABASE_ANON_KEY === "YOUR_SUPABASE_ANON_KEY"
@@ -35,6 +34,7 @@ function initSupabase() {
     return;
   }
 
+  // 创建 Supabase 客户端
   supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   console.log("✅ Supabase 客户端已初始化");
 }
