@@ -5,8 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>项目展示 - 个人网站</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.loli.net/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+
+  <!-- 背景光晕 -->
+  <div class="bg-orbs">
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+  </div>
 
   <!-- ========== 导航栏 ========== -->
   <nav class="navbar">
@@ -26,22 +33,23 @@
 
   <!-- ========== 页面标题 ========== -->
   <section class="page-header">
-    <h1>我的项目</h1>
-    <p>这里展示了我参与和开发的一些项目作品</p>
+    <h1 class="reveal">我的项目</h1>
+    <p class="reveal reveal-delay-1">这里展示了我参与和开发的一些项目作品</p>
   </section>
 
   <!-- ========== 项目网格 ========== -->
   <section class="section">
     <div class="container">
+      <h2 class="section-title reveal">项目一览</h2>
       <div class="projects-grid">
 
         <!-- 项目 1 -->
-        <div class="card project-card">
+        <div class="card project-card reveal reveal-delay-1">
           <div class="project-img">🏪 项目占位图</div>
           <div class="project-info">
             <h3>在线商城系统</h3>
             <p>基于 React + Node.js 的全栈电商平台，集成支付、物流跟踪和后台管理系统。</p>
-            <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 12px;">
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
               🛠️ React · Node.js · PostgreSQL
             </p>
             <a href="#" class="btn btn-primary btn-sm">查看项目</a>
@@ -49,12 +57,12 @@
         </div>
 
         <!-- 项目 2 -->
-        <div class="card project-card">
+        <div class="card project-card reveal reveal-delay-2">
           <div class="project-img">📊 项目占位图</div>
           <div class="project-info">
             <h3>数据可视化仪表盘</h3>
             <p>实时业务数据监控面板，支持自定义图表布局和导出功能。</p>
-            <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 12px;">
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
               🛠️ Vue.js · ECharts · Express
             </p>
             <a href="#" class="btn btn-primary btn-sm">查看项目</a>
@@ -62,12 +70,12 @@
         </div>
 
         <!-- 项目 3 -->
-        <div class="card project-card">
+        <div class="card project-card reveal reveal-delay-3">
           <div class="project-img">📝 项目占位图</div>
           <div class="project-info">
             <h3>个人博客系统</h3>
             <p>支持 Markdown 写作的静态博客，自动生成 RSS 和站点地图。</p>
-            <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 12px;">
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
               🛠️ Next.js · MDX · Tailwind CSS
             </p>
             <a href="#" class="btn btn-primary btn-sm">查看项目</a>
@@ -75,12 +83,12 @@
         </div>
 
         <!-- 项目 4 -->
-        <div class="card project-card">
+        <div class="card project-card reveal reveal-delay-1">
           <div class="project-img">✅ 项目占位图</div>
           <div class="project-info">
             <h3>任务管理应用</h3>
             <p>团队协作看板工具，支持任务分配、进度追踪和甘特图视图。</p>
-            <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 12px;">
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
               🛠️ React · Firebase · Ant Design
             </p>
             <a href="#" class="btn btn-primary btn-sm">查看项目</a>
@@ -88,12 +96,12 @@
         </div>
 
         <!-- 项目 5 -->
-        <div class="card project-card">
+        <div class="card project-card reveal reveal-delay-2">
           <div class="project-img">🌤️ 项目占位图</div>
           <div class="project-info">
             <h3>天气预报应用</h3>
             <p>调用开放 API 的天气查询应用，支持城市搜索和 7 天预报。</p>
-            <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 12px;">
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
               🛠️ Vanilla JS · OpenWeather API
             </p>
             <a href="#" class="btn btn-primary btn-sm">查看项目</a>
@@ -101,12 +109,12 @@
         </div>
 
         <!-- 项目 6 -->
-        <div class="card project-card">
+        <div class="card project-card reveal reveal-delay-3">
           <div class="project-img">🎮 项目占位图</div>
           <div class="project-info">
             <h3>贪吃蛇游戏</h3>
             <p>使用 Canvas API 开发的经典贪吃蛇游戏，支持键盘操作和分数排行榜。</p>
-            <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 12px;">
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
               🛠️ HTML5 Canvas · JavaScript
             </p>
             <a href="#" class="btn btn-primary btn-sm">查看项目</a>

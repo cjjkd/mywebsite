@@ -5,8 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>我的个人网站 - 首页</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.loli.net/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+
+  <!-- 背景光晕 -->
+  <div class="bg-orbs">
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+  </div>
 
   <!-- ========== 导航栏 ========== -->
   <nav class="navbar">
@@ -26,12 +33,12 @@
 
   <!-- ========== Hero 区域 ========== -->
   <section class="hero">
-    <h1>你好，我是<span>张三</span> 👋</h1>
+    <h1 class="reveal">你好，我是<span>caijj9</span> 👋</h1>
     <p class="subtitle">
       一名热爱技术与生活的全栈开发者。喜欢用代码创造有价值的作品，
       也享受记录每一天的成长与感动。
     </p>
-    <div class="cta-buttons">
+    <div class="cta-buttons reveal reveal-delay-2">
       <a href="projects.html" class="btn btn-primary">查看我的作品</a>
       <a href="contact.html" class="btn btn-outline">联系我</a>
     </div>
@@ -40,22 +47,28 @@
   <!-- ========== 个人简介摘要 ========== -->
   <section class="section">
     <div class="container">
-      <h2 class="section-title">关于我</h2>
+      <h2 class="section-title reveal">关于我</h2>
+      <!-- 头像占位 -->
+      <div class="about-avatar reveal reveal-delay-1">
+        <div class="avatar-circle">C</div>
+        <p class="avatar-name">caijj9</p>
+        <p class="avatar-desc">全栈开发者 · 终身学习者</p>
+      </div>
       <div class="intro-grid">
         <!-- 卡片 1 -->
-        <div class="card intro-card">
+        <div class="card intro-card reveal reveal-delay-1">
           <div class="icon">💻</div>
           <h3>全栈开发</h3>
           <p>精通前端与后端技术栈，热衷于构建用户体验优秀的 Web 应用。</p>
         </div>
         <!-- 卡片 2 -->
-        <div class="card intro-card">
+        <div class="card intro-card reveal reveal-delay-2">
           <div class="icon">📚</div>
           <h3>持续学习</h3>
           <p>每天坚持学习新技术，保持对编程世界的热情与好奇心。</p>
         </div>
         <!-- 卡片 3 -->
-        <div class="card intro-card">
+        <div class="card intro-card reveal reveal-delay-3">
           <div class="icon">🎯</div>
           <h3>目标驱动</h3>
           <p>以结果为导向，注重效率与质量，让每一行代码都有意义。</p>
@@ -67,10 +80,10 @@
   <!-- ========== 精选项目展示 ========== -->
   <section class="section">
     <div class="container">
-      <h2 class="section-title">精选项目</h2>
+      <h2 class="section-title reveal">精选项目</h2>
       <div class="projects-grid">
         <!-- 项目 1 -->
-        <div class="card project-card">
+        <div class="card project-card reveal reveal-delay-1">
           <div class="project-img">🏪 项目占位图</div>
           <div class="project-info">
             <h3>在线商城系统</h3>
@@ -79,7 +92,7 @@
           </div>
         </div>
         <!-- 项目 2 -->
-        <div class="card project-card">
+        <div class="card project-card reveal reveal-delay-2">
           <div class="project-img">📊 项目占位图</div>
           <div class="project-info">
             <h3>数据可视化仪表盘</h3>
@@ -88,7 +101,7 @@
           </div>
         </div>
         <!-- 项目 3 -->
-        <div class="card project-card">
+        <div class="card project-card reveal reveal-delay-3">
           <div class="project-img">📝 项目占位图</div>
           <div class="project-info">
             <h3>个人博客系统</h3>

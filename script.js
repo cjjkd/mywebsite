@@ -78,19 +78,23 @@ function showSuccess(message) {
 }
 
 /**
- * 通用 Toast 通知
+ * 通用 Toast 通知（使用 toast-container）
  * @param {string} message - 消息内容
  * @param {string} type - "error" 或 "success"
  */
 function showToast(message, type) {
-  // 移除已有的 toast
-  const existing = document.querySelector(".toast");
-  if (existing) existing.remove();
+  // 获取或创建容器
+  let container = document.querySelector(".toast-container");
+  if (!container) {
+    container = document.createElement("div");
+    container.className = "toast-container";
+    document.body.appendChild(container);
+  }
 
   const toast = document.createElement("div");
   toast.className = `toast ${type}`;
   toast.textContent = message;
-  document.body.appendChild(toast);
+  container.appendChild(toast);
 
   // 自动消失
   const duration = type === "error" ? 5000 : 3000;
@@ -174,3 +178,84 @@ function requireSupabase() {
   }
   return true;
 }
+
+// ---------- 6. 导航栏滚动玻璃效果 ----------
+
+/**
+ * 页面滚动时导航栏变为玻璃态背景
+ */
+function setupNavbarScroll() {
+  const navbar = document.querySelector(".navbar");
+  if (!navbar) return;
+
+  // 初始检查
+  if (window.scrollY > 10) {
+    navbar.classList.add("scrolled");
+  }
+
+  // 滚动监听（带节流）
+  let ticking = false;
+  window.addEventListener("scroll", () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        if (window.scrollY > 10) {
+          navbar.classList.add("scrolled");
+        } else {
+          navbar.classList.remove("scrolled");
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", setupNavbarScroll);
+
+// ---------- 7. 滚动入场动画 (Intersection Observer) ----------
+
+/**
+ * 为所有 .reveal 元素添加淡入+上移动画
+ * 元素进入视口时自动添加 .visible 类
+ */
+function setupRevealAnimations() {
+  const revealElements = document.querySelectorAll(".reveal");
+  if (revealElements.length === 0) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          // 只触发一次
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.1,
+      rootMargin: "0px 0px -50px 0px",
+    }
+  );
+
+  revealElements.forEach((el) => observer.observe(el));
+}
+
+document.addEventListener("DOMContentLoaded", setupRevealAnimations);
+
+// ---------- 8. Hero 打字光标效果 ----------
+
+/**
+ * 在 Hero 标题末尾添加打字光标
+ */
+function setupTypingCursor() {
+  const heroTitle = document.querySelector(".hero h1 span");
+  if (!heroTitle) return;
+
+  // 在 span 后面添加光标元素
+  const cursor = document.createElement("span");
+  cursor.className = "typing-cursor";
+  heroTitle.parentNode.insertBefore(cursor, heroTitle.nextSibling);
+}
+
+document.addEventListener("DOMContentLoaded", setupTypingCursor);

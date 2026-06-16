@@ -1,32 +1,74 @@
 /* ============================================================
-   个人网站 - 共享样式表 (Personal Website - Shared Stylesheet)
-   主色调：#2C3E50 (深蓝) + #E67E22 (橙色点缀)
-   风格：简约、现代、卡片式设计
+   个人网站 - Glassmorphism 高级设计系统
+   风格：通透、玻璃态、大学官网高级感
+   主色：#0A1628 (深海蓝) + #C9A84C (金色点缀)
    ============================================================ */
 
-/* ---------- 1. CSS 变量 & 基础重置 ---------- */
+/* ---------- 1. Google Fonts 导入 ---------- */
+/* 使用 fonts.loli.net 国内镜像，如果还慢可以换成：
+   https://fonts.googleapis.com/css2?family=... */
+@import url('https://fonts.loli.net/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+/* ---------- 2. CSS 变量 ---------- */
 :root {
-  --primary: #2C3E50;
-  --primary-light: #3D566E;
-  --accent: #E67E22;
-  --accent-hover: #D35400;
-  --bg: #F5F6FA;
-  --card-bg: #FFFFFF;
-  --text: #2C3E50;
-  --text-light: #7F8C8D;
-  --border: #E0E4E8;
+  /* 主色调 */
+  --primary: #0A1628;
+  --primary-light: #142A45;
+  --primary-dark: #060E1A;
+
+  /* 强调色 — 金色（大学官网风） */
+  --accent: #C9A84C;
+  --accent-light: #DFC66A;
+  --accent-hover: #D4B85A;
+  --accent-glow: rgba(201, 168, 76, 0.25);
+
+  /* 备用强调色 — 暖橙色（打卡页面使用） */
+  --accent-orange: #E67E22;
+  --accent-orange-hover: #D35400;
+
+  /* 玻璃态 */
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-bg-hover: rgba(255, 255, 255, 0.10);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border-hover: rgba(255, 255, 255, 0.20);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  --glass-shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.35);
+
+  /* 深色模式卡片（非玻璃态页面的备用） */
+  --card-bg: rgba(255, 255, 255, 0.06);
+  --card-border: rgba(255, 255, 255, 0.10);
+  --card-border-hover: rgba(255, 255, 255, 0.18);
+
+  /* 功能色 */
   --success: #27AE60;
+  --success-bg: rgba(39, 174, 96, 0.15);
   --danger: #E74C3C;
+  --danger-bg: rgba(231, 76, 60, 0.15);
   --warning: #F39C12;
-  --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
-  --radius: 12px;
-  --transition: all 0.3s ease;
+
+  /* 文字 */
+  --text: #E8ECF1;
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.45);
+
+  /* 布局 */
   --max-width: 1100px;
-  --nav-height: 65px;
+  --nav-height: 70px;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --radius-lg: 20px;
+
+  /* 过渡 */
+  --transition-fast: all 0.2s ease;
+  --transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-slow: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-* {
+/* ---------- 3. 基础重置 ---------- */
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -37,49 +79,132 @@ html {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-    "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
-  background-color: var(--bg);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'PingFang SC',
+    'Microsoft YaHei', sans-serif;
+  background: var(--primary);
   color: var(--text);
   line-height: 1.7;
   padding-top: var(--nav-height);
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
+/* ---------- 4. 动态背景光晕 (Floating Orbs) ---------- */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+body::before {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(201, 168, 76, 0.08) 0%, transparent 70%);
+  top: -200px;
+  right: -150px;
+  animation: orbFloat1 25s ease-in-out infinite;
+}
+
+body::after {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(100, 140, 255, 0.06) 0%, transparent 70%);
+  bottom: -150px;
+  left: -100px;
+  animation: orbFloat2 30s ease-in-out infinite;
+}
+
+/* 额外光晕层（通过额外伪元素无法实现，用 .bg-orb 替代） */
+.bg-orbs {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.5;
+}
+
+.bg-orb--1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(201, 168, 76, 0.06) 0%, transparent 70%);
+  top: 30%;
+  left: 60%;
+  animation: orbFloat3 20s ease-in-out infinite;
+}
+
+.bg-orb--2 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(70, 130, 200, 0.05) 0%, transparent 70%);
+  top: 60%;
+  left: 20%;
+  animation: orbFloat1 22s ease-in-out infinite reverse;
+}
+
+/* ---------- 5. 打字光标动画 ---------- */
+.typing-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 1em;
+  background: var(--accent);
+  margin-left: 4px;
+  vertical-align: text-bottom;
+  animation: blink 0.8s step-end infinite;
+}
+
+/* ---------- 6. 链接 ---------- */
 a {
   text-decoration: none;
   color: var(--accent);
-  transition: var(--transition);
+  transition: var(--transition-fast);
 }
 
 a:hover {
-  color: var(--accent-hover);
+  color: var(--accent-light);
 }
 
-img {
-  max-width: 100%;
-  display: block;
-}
-
-/* ---------- 2. 导航栏 ---------- */
+/* ---------- 7. 导航栏 (Glass on Scroll) ---------- */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   height: var(--nav-height);
-  background: var(--card-bg);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 40px;
   z-index: 1000;
+  transition: var(--transition);
+  /* 初始完全透明 */
+  background: transparent;
+}
+
+.navbar.scrolled {
+  background: rgba(10, 22, 40, 0.72);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
 }
 
 .navbar .logo {
-  font-size: 1.4rem;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: var(--primary);
+  color: var(--text-primary);
+  letter-spacing: 1px;
 }
 
 .navbar .logo span {
@@ -89,26 +214,48 @@ img {
 .nav-links {
   display: flex;
   list-style: none;
-  gap: 28px;
+  gap: 32px;
   align-items: center;
 }
 
 .nav-links a {
-  color: var(--text);
-  font-weight: 500;
-  font-size: 0.95rem;
-  padding: 6px 4px;
-  border-bottom: 2px solid transparent;
-  transition: var(--transition);
+  color: var(--text-secondary);
+  font-weight: 400;
+  font-size: 0.9rem;
+  padding: 6px 0;
+  position: relative;
+  letter-spacing: 0.5px;
+  border-bottom: none;
+  transition: var(--transition-fast);
 }
 
-.nav-links a:hover,
+/* 导航下划线动效 */
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  transition: var(--transition);
+  border-radius: 1px;
+}
+
+.nav-links a:hover {
+  color: var(--text-primary);
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+  width: 100%;
+}
+
 .nav-links a.active {
   color: var(--accent);
-  border-bottom-color: var(--accent);
 }
 
-/* 汉堡菜单（移动端） */
+/* 汉堡菜单 */
 .hamburger {
   display: none;
   flex-direction: column;
@@ -117,45 +264,86 @@ img {
   background: none;
   border: none;
   padding: 8px;
+  z-index: 1001;
 }
 
 .hamburger span {
   display: block;
   width: 24px;
-  height: 2.5px;
-  background: var(--primary);
+  height: 2px;
+  background: var(--text-primary);
   border-radius: 2px;
   transition: var(--transition);
 }
 
-/* ---------- 3. 页面标题区 ---------- */
-.page-header {
-  text-align: center;
-  padding: 60px 20px 30px;
+/* ---------- 8. 玻璃态卡片 (.glass 基类) ---------- */
+.glass,
+.card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--glass-shadow);
+  transition: var(--transition);
 }
 
-.page-header h1 {
-  font-size: 2.5rem;
-  color: var(--primary);
-  margin-bottom: 10px;
+.card:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-shadow-hover);
+  transform: translateY(-4px);
 }
 
-.page-header p {
-  color: var(--text-light);
-  font-size: 1.1rem;
-}
-
-/* ---------- 4. Hero 区域（首页） ---------- */
+/* ---------- 9. Hero 区域 ---------- */
 .hero {
+  position: relative;
+  min-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 80px 20px 60px;
-  background: linear-gradient(135deg, var(--primary) 0%, #1A252F 100%);
-  color: white;
+  padding: 100px 20px 80px;
+  overflow: hidden;
+}
+
+/* Hero 背景光晕 */
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(201, 168, 76, 0.06) 0%, transparent 60%);
+  top: -300px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: heroGlow 8s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(100, 140, 255, 0.04) 0%, transparent 60%);
+  bottom: -200px;
+  right: -100px;
+  animation: heroGlow 12s ease-in-out infinite alternate-reverse;
+  pointer-events: none;
 }
 
 .hero h1 {
-  font-size: 3rem;
-  margin-bottom: 16px;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 3.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+  letter-spacing: 1px;
+  line-height: 1.2;
 }
 
 .hero h1 span {
@@ -163,118 +351,141 @@ img {
 }
 
 .hero .subtitle {
-  font-size: 1.25rem;
-  color: rgba(255, 255, 255, 0.85);
-  margin-bottom: 30px;
+  font-size: 1.15rem;
+  color: var(--text-secondary);
+  margin-bottom: 36px;
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+  position: relative;
+  z-index: 1;
+  line-height: 1.8;
+  font-weight: 300;
 }
 
 .hero .cta-buttons {
   display: flex;
-  gap: 16px;
+  gap: 18px;
   justify-content: center;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
 }
 
-/* ---------- 5. 容器 ---------- */
+/* ---------- 10. 容器 & 章节 ---------- */
 .container {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 24px;
 }
 
 .section {
-  padding: 50px 0;
+  padding: 80px 0;
+  position: relative;
 }
 
 .section-title {
   text-align: center;
-  font-size: 2rem;
-  color: var(--primary);
-  margin-bottom: 36px;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 50px;
   position: relative;
 }
 
 .section-title::after {
-  content: "";
+  content: '';
   display: block;
-  width: 60px;
-  height: 3px;
+  width: 50px;
+  height: 2px;
   background: var(--accent);
-  margin: 12px auto 0;
-  border-radius: 2px;
+  margin: 16px auto 0;
+  border-radius: 1px;
 }
 
-/* ---------- 6. 卡片 ---------- */
-.card {
-  background: var(--card-bg);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 28px;
-  transition: var(--transition);
+/* ---------- 11. 页面标题区 ---------- */
+.page-header {
+  text-align: center;
+  padding: 80px 20px 40px;
 }
 
-.card:hover {
-  box-shadow: var(--shadow-hover);
-  transform: translateY(-3px);
+.page-header h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
 }
 
-/* ---------- 7. 按钮 ---------- */
+.page-header p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  font-weight: 300;
+}
+
+/* ---------- 12. 按钮 ---------- */
 .btn {
   display: inline-block;
-  padding: 12px 28px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.95rem;
+  padding: 12px 30px;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  font-size: 0.9rem;
   cursor: pointer;
   border: none;
   transition: var(--transition);
   text-align: center;
+  letter-spacing: 0.5px;
 }
 
 .btn-primary {
-  background: var(--accent);
-  color: white;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+  color: #0A1628;
+  font-weight: 600;
+  box-shadow: 0 4px 15px var(--accent-glow);
 }
 
 .btn-primary:hover {
-  background: var(--accent-hover);
-  color: white;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(230, 126, 34, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px var(--accent-glow);
+  color: #0A1628;
 }
 
 .btn-outline {
   background: transparent;
-  color: white;
-  border: 2px solid white;
+  color: var(--text-primary);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
 }
 
 .btn-outline:hover {
-  background: white;
-  color: var(--primary);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-2px);
 }
 
 .btn-danger {
-  background: var(--danger);
-  color: white;
+  background: var(--danger-bg);
+  color: var(--danger);
+  border: 1px solid rgba(231, 76, 60, 0.3);
   padding: 8px 16px;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
 }
 
 .btn-danger:hover {
-  background: #C0392B;
-  color: white;
+  background: rgba(231, 76, 60, 0.25);
+  color: #FF6B6B;
+  transform: translateY(-1px);
 }
 
 .btn-sm {
-  padding: 8px 16px;
-  font-size: 0.85rem;
+  padding: 8px 18px;
+  font-size: 0.82rem;
 }
 
-/* ---------- 8. 首页 - 简介卡片 ---------- */
+/* ---------- 13. 首页 - 简介卡片 ---------- */
 .intro-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -284,26 +495,72 @@ img {
 
 .intro-card {
   text-align: center;
-  padding: 36px 24px;
+  padding: 44px 28px;
 }
 
 .intro-card .icon {
-  font-size: 2.5rem;
-  margin-bottom: 16px;
+  font-size: 2.8rem;
+  margin-bottom: 18px;
+  display: block;
 }
 
 .intro-card h3 {
-  font-size: 1.2rem;
-  margin-bottom: 10px;
-  color: var(--primary);
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.3rem;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 .intro-card p {
-  color: var(--text-light);
-  font-size: 0.95rem;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.7;
 }
 
-/* ---------- 9. 精选项目（首页 & 项目页） ---------- */
+/* ---------- 头像占位 ---------- */
+.about-avatar {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.avatar-circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #0A1628;
+  margin: 0 auto 16px;
+  box-shadow: 0 0 30px var(--accent-glow);
+  transition: var(--transition);
+}
+
+.avatar-circle:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 50px var(--accent-glow);
+}
+
+.avatar-name {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.avatar-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 300;
+}
+
+/* ---------- 14. 项目卡片 ---------- */
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -312,13 +569,13 @@ img {
 
 .project-card .project-img {
   width: 100%;
-  height: 180px;
-  background: linear-gradient(135deg, #BDC3C7 0%, #95A5A6 100%);
-  border-radius: var(--radius) var(--radius) 0 0;
+  height: 200px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+  border-bottom: 1px solid var(--glass-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--text-muted);
   font-size: 1rem;
   overflow: hidden;
 }
@@ -335,27 +592,30 @@ img {
 }
 
 .project-card .project-info {
-  padding: 20px;
+  padding: 24px;
 }
 
 .project-card .project-info h3 {
-  font-size: 1.15rem;
-  margin-bottom: 8px;
-  color: var(--primary);
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--text-primary);
 }
 
 .project-card .project-info p {
-  color: var(--text-light);
-  font-size: 0.9rem;
-  margin-bottom: 14px;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  margin-bottom: 16px;
+  line-height: 1.6;
 }
 
 .project-card .project-info .btn {
-  font-size: 0.85rem;
-  padding: 8px 18px;
+  font-size: 0.82rem;
+  padding: 8px 20px;
 }
 
-/* ---------- 10. 关于页 - 技能进度条 ---------- */
+/* ---------- 15. 关于页 ---------- */
 .about-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -364,18 +624,28 @@ img {
 }
 
 .about-bio {
-  font-size: 1.05rem;
-  color: var(--text);
+  padding: 36px;
+}
+
+.about-bio h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: var(--text-primary);
 }
 
 .about-bio p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
   margin-bottom: 16px;
+  line-height: 1.8;
 }
 
 .skills {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  padding: 36px;
+}
+
+.skills h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: var(--text-primary);
 }
 
 .skill-item {
@@ -384,35 +654,42 @@ img {
   gap: 6px;
 }
 
+.skill-item + .skill-item {
+  margin-top: 20px;
+}
+
 .skill-item .skill-label {
   display: flex;
   justify-content: space-between;
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--primary);
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
 }
 
 .skill-bar {
-  height: 10px;
-  background: var(--border);
-  border-radius: 5px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
   overflow: hidden;
 }
 
 .skill-bar .skill-fill {
   height: 100%;
-  border-radius: 5px;
-  background: linear-gradient(90deg, var(--accent) 0%, #F0A04B 100%);
-  transition: width 1.2s ease;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%);
+  transition: width 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 0 10px var(--accent-glow);
 }
 
-/* ---------- 11. 日记页 ---------- */
+/* ---------- 16. 日记页 ---------- */
 .diary-form {
-  background: var(--card-bg);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 28px;
+  padding: 32px;
   margin-bottom: 40px;
+}
+
+.diary-form h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: var(--text-primary);
 }
 
 .diary-form .form-row {
@@ -429,22 +706,23 @@ img {
 }
 
 .form-group label {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--primary);
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.3px;
 }
 
 .form-group input,
 .form-group textarea,
 .form-group select {
-  padding: 12px 14px;
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  font-size: 0.95rem;
+  padding: 12px 16px;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
   font-family: inherit;
-  transition: var(--transition);
-  background: var(--bg);
-  color: var(--text);
+  transition: var(--transition-fast);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
 }
 
 .form-group input:focus,
@@ -452,7 +730,13 @@ img {
 .form-group select:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--text-muted);
 }
 
 .form-group textarea {
@@ -469,30 +753,32 @@ img {
 }
 
 .mood-btn {
-  padding: 10px 18px;
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  background: var(--card-bg);
+  padding: 10px 20px;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.95rem;
   transition: var(--transition);
-  font-weight: 500;
+  font-weight: 400;
+  color: var(--text-secondary);
 }
 
 .mood-btn:hover {
   border-color: var(--accent);
-  background: #FFF5EB;
+  background: rgba(201, 168, 76, 0.08);
+  color: var(--text-primary);
 }
 
 .mood-btn.selected {
   border-color: var(--accent);
-  background: #FFF5EB;
+  background: rgba(201, 168, 76, 0.15);
   color: var(--accent);
-  font-weight: 700;
-  box-shadow: 0 0 0 2px rgba(230, 126, 34, 0.2);
+  font-weight: 600;
+  box-shadow: 0 0 20px var(--accent-glow);
 }
 
-/* 历史日记列表 */
+/* 日记列表 */
 .diary-list,
 .checkin-list {
   display: flex;
@@ -505,34 +791,33 @@ img {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
+  padding: 22px 28px;
   flex-wrap: wrap;
   gap: 12px;
 }
 
-.diary-card .diary-info,
-.checkin-card .checkin-info {
+.diary-card .diary-info {
   flex: 1;
   min-width: 200px;
 }
 
 .diary-card .diary-date {
-  font-size: 0.85rem;
-  color: var(--text-light);
+  font-size: 0.82rem;
+  color: var(--text-muted);
 }
 
 .diary-card .diary-title {
-  font-weight: 600;
-  font-size: 1.05rem;
-  margin: 4px 0;
-  color: var(--primary);
+  font-weight: 500;
+  font-size: 1rem;
+  margin: 6px 0 0;
+  color: var(--text-primary);
 }
 
 .diary-card .diary-mood {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
 }
 
-/* ---------- 12. 打卡页 ---------- */
+/* ---------- 17. 打卡页 ---------- */
 .checkin-type-toggle {
   display: flex;
   gap: 10px;
@@ -541,66 +826,68 @@ img {
 }
 
 .type-btn {
-  padding: 12px 24px;
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  background: var(--card-bg);
+  padding: 12px 26px;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.95rem;
   transition: var(--transition);
-  font-weight: 500;
+  font-weight: 400;
+  color: var(--text-secondary);
 }
 
 .type-btn:hover {
   border-color: var(--accent);
+  background: rgba(201, 168, 76, 0.08);
+  color: var(--text-primary);
 }
 
 .type-btn.active {
   border-color: var(--accent);
-  background: var(--accent);
-  color: white;
-  font-weight: 700;
-  box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.15) 0%, rgba(201, 168, 76, 0.08) 100%);
+  color: var(--accent);
+  font-weight: 600;
+  box-shadow: 0 0 20px var(--accent-glow);
 }
 
-/* 打卡类型标签 */
 .badge {
   display: inline-block;
   padding: 4px 14px;
   border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.78rem;
+  font-weight: 500;
 }
 
 .badge-study {
-  background: #EBF5FB;
-  color: #2980B9;
+  background: rgba(41, 128, 185, 0.2);
+  color: #5DADE2;
+  border: 1px solid rgba(41, 128, 185, 0.3);
 }
 
 .badge-fitness {
-  background: #FDEDEC;
+  background: rgba(231, 76, 60, 0.15);
   color: #E74C3C;
+  border: 1px solid rgba(231, 76, 60, 0.3);
 }
 
 .badge-meditation {
-  background: #E8F8F5;
+  background: rgba(26, 188, 156, 0.15);
   color: #1ABC9C;
+  border: 1px solid rgba(26, 188, 156, 0.3);
 }
 
 .checkin-card .checkin-duration {
-  font-weight: 700;
+  font-weight: 600;
   color: var(--accent);
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
-/* ---------- 13. 联系表单 ---------- */
+/* ---------- 18. 联系页 ---------- */
 .contact-form {
   max-width: 600px;
   margin: 0 auto;
-  background: var(--card-bg);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 32px;
+  padding: 36px;
 }
 
 .contact-form .form-group {
@@ -619,108 +906,180 @@ img {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 24px;
-  background: var(--card-bg);
+  padding: 14px 28px;
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
   transition: var(--transition);
-  color: var(--primary);
-  font-weight: 500;
+  color: var(--text-secondary);
+  font-weight: 400;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
 }
 
 .social-link:hover {
   color: var(--accent);
-  box-shadow: var(--shadow-hover);
-  transform: translateY(-2px);
+  border-color: var(--accent);
+  background: rgba(201, 168, 76, 0.08);
+  transform: translateY(-3px);
+  box-shadow: var(--glass-shadow-hover);
 }
 
 .social-link .social-icon {
   font-size: 1.3rem;
 }
 
-/* ---------- 14. Toast 通知 ---------- */
-.toast {
+/* ---------- 19. Toast 通知 ---------- */
+.toast-container {
   position: fixed;
-  top: 80px;
+  top: 90px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 14px 28px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.95rem;
   z-index: 2000;
-  animation: slideDown 0.4s ease;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   max-width: 90vw;
 }
 
+.toast {
+  padding: 14px 28px;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  font-size: 0.9rem;
+  animation: slideDown 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
 .toast.error {
-  background: #FDEDEC;
-  color: var(--danger);
-  border: 2px solid var(--danger);
+  background: rgba(231, 76, 60, 0.15);
+  color: #FF6B6B;
+  border: 1px solid rgba(231, 76, 60, 0.3);
 }
 
 .toast.success {
-  background: #E8F8F5;
-  color: var(--success);
-  border: 2px solid var(--success);
+  background: rgba(39, 174, 96, 0.15);
+  color: #2ECC71;
+  border: 1px solid rgba(39, 174, 96, 0.3);
 }
 
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-}
-
-/* ---------- 15. 页脚 ---------- */
+/* ---------- 20. 页脚 ---------- */
 .footer {
-  background: var(--primary);
-  color: rgba(255, 255, 255, 0.8);
+  background: rgba(6, 14, 26, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
   text-align: center;
-  padding: 30px 20px;
-  margin-top: 60px;
-  font-size: 0.9rem;
+  padding: 40px 20px;
+  margin-top: 80px;
+  font-size: 0.88rem;
 }
 
 .footer .footer-links {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 24px;
   list-style: none;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 }
 
 .footer .footer-links a {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 400;
 }
 
 .footer .footer-links a:hover {
   color: var(--accent);
 }
 
-/* ---------- 16. 空状态 ---------- */
+.footer p {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+/* ---------- 21. 空状态 ---------- */
 .empty-state {
   text-align: center;
-  padding: 50px 20px;
-  color: var(--text-light);
+  padding: 60px 20px;
+  color: var(--text-muted);
 }
 
 .empty-state .empty-icon {
-  font-size: 3rem;
-  margin-bottom: 12px;
+  font-size: 3.5rem;
+  margin-bottom: 14px;
+  opacity: 0.6;
 }
 
 .empty-state p {
-  font-size: 1.05rem;
+  font-size: 1rem;
+  color: var(--text-muted);
 }
 
-/* ---------- 17. 响应式 - 平板 (≤768px) ---------- */
+/* ---------- 22. 滚动入场动画 (.reveal) ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 延迟变体 */
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
+/* ---------- 23. CSS 关键帧动画 ---------- */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes orbFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(40px, -60px) scale(1.1); }
+  66% { transform: translate(-30px, 40px) scale(0.9); }
+}
+
+@keyframes orbFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-50px, 60px) scale(1.15); }
+  66% { transform: translate(40px, -30px) scale(0.85); }
+}
+
+@keyframes orbFloat3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(60px, 40px) scale(1.2); }
+}
+
+@keyframes heroGlow {
+  0% { opacity: 0.4; transform: translateX(-50%) scale(1); }
+  100% { opacity: 0.8; transform: translateX(-50%) scale(1.15); }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- 24. 响应式 - 平板 (≤768px) ---------- */
 @media (max-width: 768px) {
   .navbar {
     padding: 0 20px;
@@ -731,28 +1090,35 @@ img {
     top: var(--nav-height);
     left: 0;
     right: 0;
-    background: var(--card-bg);
+    background: rgba(10, 22, 40, 0.92);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     flex-direction: column;
     gap: 0;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.35s ease;
+    transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   }
 
   .nav-links.open {
-    max-height: 400px;
+    max-height: 450px;
   }
 
   .nav-links a {
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     display: block;
   }
 
+  .nav-links a::after {
+    display: none;
+  }
+
   .nav-links a.active {
-    border-bottom-color: var(--border);
-    background: #FFF5EB;
+    background: rgba(201, 168, 76, 0.08);
+    color: var(--accent);
   }
 
   .hamburger {
@@ -760,11 +1126,11 @@ img {
   }
 
   .hero h1 {
-    font-size: 2rem;
+    font-size: 2.2rem;
   }
 
   .hero .subtitle {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .intro-grid,
@@ -781,15 +1147,20 @@ img {
   }
 
   .section-title {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
   }
 
   .page-header h1 {
     font-size: 2rem;
   }
+
+  .hero {
+    min-height: 70vh;
+    padding: 80px 20px 60px;
+  }
 }
 
-/* ---------- 18. 响应式 - 手机 (≤480px) ---------- */
+/* ---------- 25. 响应式 - 手机 (≤480px) ---------- */
 @media (max-width: 480px) {
   .intro-grid,
   .projects-grid {
@@ -797,16 +1168,17 @@ img {
   }
 
   .hero h1 {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
   }
 
   .hero {
-    padding: 50px 16px 40px;
+    min-height: 60vh;
+    padding: 60px 16px 40px;
   }
 
   .btn {
-    padding: 10px 22px;
-    font-size: 0.9rem;
+    padding: 10px 24px;
+    font-size: 0.85rem;
   }
 
   .diary-card,
@@ -822,7 +1194,40 @@ img {
 
   .mood-btn,
   .type-btn {
-    padding: 8px 14px;
-    font-size: 0.9rem;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+
+  .section {
+    padding: 50px 0;
+  }
+
+  .page-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+}
+
+/* ---------- 26. 移除触摸设备的悬停效果 ---------- */
+@media (hover: none) {
+  .card:hover {
+    transform: none;
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .social-link:hover {
+    transform: none;
+    color: var(--text-secondary);
+    border-color: var(--glass-border);
+    background: var(--glass-bg);
+  }
+
+  .project-card:hover {
+    transform: none;
   }
 }
