@@ -618,9 +618,11 @@ a:hover {
 /* ---------- 15. 关于页 ---------- */
 .about-content {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 40px;
   align-items: start;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .about-bio {
