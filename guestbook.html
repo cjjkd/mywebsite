@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>留言板 - 个人网站</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.loli.net/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- 背景光晕 -->
+  <div class="bg-orbs">
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+  </div>
+
+  <!-- ========== 导航栏 ========== -->
+  <nav class="navbar">
+    <a href="index.html" class="logo">我的<span>网站</span></a>
+    <button class="hamburger" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="index.html">首页</a></li>
+      <li><a href="about.html">关于我</a></li>
+      <li><a href="guestbook.html">留言</a></li>
+      <li><a href="diary.html">日记</a></li>
+      <li><a href="checkin.html">打卡</a></li>
+      <li><a href="contact.html">联系</a></li>
+    </ul>
+  </nav>
+
+  <!-- ========== 页面标题 ========== -->
+  <section class="page-header">
+    <h1 class="reveal">💬 留言板</h1>
+    <p class="reveal reveal-delay-1">欢迎留下你的足迹，说点什么吧！</p>
+  </section>
+
+  <!-- ========== 留言表单 ========== -->
+  <section class="section">
+    <div class="container">
+
+      <div class="diary-form reveal">
+        <h2 style="margin-bottom: 20px; color: var(--accent);">✍️ 写下留言</h2>
+
+        <!-- 昵称 -->
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label for="guestName">👤 昵称</label>
+          <input type="text" id="guestName" placeholder="你的名字（选填，不填就是「匿名」）" maxlength="50">
+        </div>
+
+        <!-- 留言内容 -->
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label for="guestMessage">💬 留言内容</label>
+          <textarea id="guestMessage" placeholder="想说点什么？留言吧..." rows="4"></textarea>
+        </div>
+
+        <!-- 提交按钮 -->
+        <button class="btn btn-primary" id="submitGuestbookBtn" style="width: 100%;">
+          💾 发布留言
+        </button>
+      </div>
+
+      <!-- ========== 留言列表 ========== -->
+      <h2 class="section-title reveal" style="margin-top: 40px;">💬 留言列表</h2>
+      <div class="checkin-list" id="guestbookList">
+        <!-- 动态加载 -->
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <p>还没有留言，来做第一个留言的人吧！</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== 页脚 ========== -->
+  <footer class="footer">
+    <ul class="footer-links">
+      <li><a href="index.html">首页</a></li>
+      <li><a href="about.html">关于我</a></li>
+      <li><a href="guestbook.html">留言</a></li>
+      <li><a href="diary.html">日记</a></li>
+      <li><a href="checkin.html">打卡</a></li>
+      <li><a href="contact.html">联系</a></li>
+    </ul>
+    <p>&copy; 2026 我的个人网站 | 使用 ❤️ 和 HTML/CSS/JS 构建</p>
+  </footer>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- 共享 JS -->
+  <script src="script.js"></script>
+
+  <!-- ========== 留言板专属逻辑 ========== -->
+  <script>
+    // ---------- 初始化 ----------
+    document.addEventListener('DOMContentLoaded', () => {
+      // 加载留言列表
+      loadMessages();
+
+      // 提交按钮事件
+      document.getElementById('submitGuestbookBtn').addEventListener('click', submitMessage);
+    });
+
+    // ---------- 提交留言 ----------
+    async function submitMessage() {
+      if (!requireSupabase()) return;
+
+      const name = document.getElementById('guestName').value.trim() || '匿名';
+      const message = document.getElementById('guestMessage').value.trim();
+
+      // 表单验证
+      if (!message) {
+        showError('请输入留言内容！');
+        return;
+      }
+      if (message.length > 500) {
+        showError('留言内容不能超过 500 字！');
+        return;
+      }
+
+      const btn = document.getElementById('submitGuestbookBtn');
+      btn.textContent = '⏳ 发布中...';
+      btn.disabled = true;
+
+      try {
+        const { error } = await supabaseClient
+          .from('guestbook')
+          .insert([{ name, message }]);
+
+        if (error) throw error;
+
+        showSuccess('留言发布成功！🎉');
+
+        // 清空留言框
+        document.getElementById('guestMessage').value = '';
+
+        // 重新加载列表
+        loadMessages();
+      } catch (err) {
+        console.error('发布留言失败：', err);
+        showError('发布失败：' + (err.message || '未知错误。请检查 Supabase 连接和表结构。'));
+      } finally {
+        btn.textContent = '💾 发布留言';
+        btn.disabled = false;
+      }
+    }
+
+    // ---------- 加载留言列表 ----------
+    async function loadMessages() {
+      const listEl = document.getElementById('guestbookList');
+
+      if (!requireSupabase()) {
+        listEl.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">⚠️</div>
+            <p>请先在 script.js 中配置 Supabase URL 和 Key</p>
+          </div>`;
+        return;
+      }
+
+      listEl.innerHTML = '<p style="text-align:center;color:var(--text-muted);">⏳ 加载中...</p>';
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('guestbook')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          listEl.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">📭</div>
+              <p>还没有留言，来做第一个留言的人吧！</p>
+            </div>`;
+          return;
+        }
+
+        // 渲染列表
+        listEl.innerHTML = data
+          .map(
+            (entry) => `
+          <div class="card guestbook-card" style="padding:22px 28px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;">
+              <div style="flex:1;min-width:200px;">
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+                  <span style="font-weight:600;color:var(--accent);">${escapeHtml(entry.name)}</span>
+                  <span style="font-size:0.78rem;color:var(--text-muted);">${formatDateTime(entry.created_at)}</span>
+                </div>
+                <p style="color:var(--text-primary);line-height:1.7;word-break:break-word;">${escapeHtml(entry.message)}</p>
+              </div>
+              <button class="btn btn-danger btn-sm" onclick="deleteMessage('${entry.id}')">
+                🗑️ 删除
+              </button>
+            </div>
+          </div>`
+          )
+          .join('');
+      } catch (err) {
+        console.error('加载留言失败：', err);
+        listEl.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">❌</div>
+            <p>加载失败：${escapeHtml(err.message || '未知错误')}</p>
+          </div>`;
+      }
+    }
+
+    // ---------- 删除留言 ----------
+    async function deleteMessage(id) {
+      if (!requireSupabase()) return;
+
+      if (!confirm('确定要删除这条留言吗？')) return;
+
+      try {
+        const { error } = await supabaseClient
+          .from('guestbook')
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+
+        showSuccess('留言已删除');
+        loadMessages();
+      } catch (err) {
+        console.error('删除留言失败：', err);
+        showError('删除失败：' + (err.message || '未知错误'));
+      }
+    }
+
+    // ---------- 格式化时间 ----------
+    function formatDateTime(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      const hh = String(d.getHours()).padStart(2, '0');
+      const mi = String(d.getMinutes()).padStart(2, '0');
+      return `${yyyy}年${parseInt(mm)}月${parseInt(dd)}日 ${hh}:${mi}`;
+    }
+
+    // ---------- 防 XSS：转义 HTML ----------
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>
